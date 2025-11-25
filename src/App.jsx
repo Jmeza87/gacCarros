@@ -1,29 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2, AlertCircle, Check } from 'lucide-react';
 
-/**
- * DATOS DE CONFIGURACIÓN
- * Reemplaza las URLs en 'img' con las imágenes reales de tus vehículos.
- */
+
 const carData = [
   {
     id: 'verde',
     name: 'Verde Luchador',
-    hex: '#4F6F52',
+    hex: '#a59d28',
     img: '/verdeLuchador.png'
   },
   {
     id: 'gris',
-    name: 'Gris Grafeno',
-    hex: '#565d68',
+    name: 'Gris Lunar',
+    hex: ' #d3d3d3',
     img: 'grisGrafeno.png'
   },
   {
     id: 'negro',
-    name: 'Negro Místico',
-    hex: '#1a1a1a',
+    name: 'Plateado Fugaz',
+    hex: '#585858',
     img: '/negroMistico.png'
-  }
+  },
+   {
+    id: 'blanco',
+    name: 'Blanco Marfil',
+    hex: '#ededec',
+    img: '/BlancoMarfil.png'
+  },
 ];
 
 const fallbackImage = 'https://placehold.co/800x600/cccccc/969696?text=Imagen+No+Disponible';
@@ -181,7 +184,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* Estilos extra para animaciones y FIX de centrado vertical */}
+   
       <style>{`
         /* FIX DE CENTRADO: Asegura que los elementos raíz ocupen toda la altura disponible */
         /* Nota: Se han añadido las propiedades de margin: 0 y box-sizing: border-box 
