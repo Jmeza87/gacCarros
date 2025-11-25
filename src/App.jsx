@@ -19,7 +19,7 @@ const carData = [
     id: 'negro',
     name: 'Plateado Fugaz',
     hex: '#585858',
-    img: '/negroMistico.png'
+    img: '/plateadoFugaz.png'
   },
    {
     id: 'blanco',
