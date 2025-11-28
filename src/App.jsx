@@ -36,7 +36,7 @@ export default function App() {
   const [hasError, setHasError] = useState(false);
   const [colorTransition, setColorTransition] = useState(false);
 
-  // Precarga de imágenes
+  // Precarga de imágenes para mejorar la experiencia de usuario
   useEffect(() => {
     carData.forEach((car) => {
       const img = new Image();
@@ -48,6 +48,7 @@ export default function App() {
     if (car.id === selectedCar.id) return;
     
     setColorTransition(true);
+    setIsLoading(true);
     setHasError(false);
     
     setTimeout(() => {
@@ -66,7 +67,6 @@ export default function App() {
   };
 
   return (
-    // Aseguramos que el fondo de la aplicación sea uniforme (bg-light)
     <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light py-5 w-100" style={{ overflowX: 'hidden' }}>
       
       <div className="container">
@@ -74,22 +74,16 @@ export default function App() {
           
           <div className="col-lg-10 col-xl-8 p-4 p-md-5"> 
 
-            {/* Contenedor de la Imagen: 
-                1. Se eliminó la clase 'rounded-4' y 'mb-5'
-                2. Se eliminó el 'boxShadow' del estilo
-                3. Se definió el fondo como 'bg-light' para que coincida con el fondo general.
-            */}
+            {/* Contenedor de la Imagen */}
             <div 
               className="position-relative d-flex align-items-center justify-content-center overflow-hidden bg-light" 
               style={{ 
                 aspectRatio: '16/9',
-                // Fondo plano, sin gradiente ni sombras para mezclarse con el fondo general.
-                // IMPORTANTE: Aseguramos que el fondo sea '#f8f9fa', el valor por defecto de 'bg-light' en Bootstrap.
-                background: '#f8f9fa' 
+                background: '#f8f9fa',
               }}
             >
               
-              {isLoading && (
+              {(isLoading && !hasError) && (
                 <div className="position-absolute top-50 start-50 translate-middle z-3 text-primary bg-white bg-opacity-75 p-4 rounded-3 shadow-sm d-flex flex-column align-items-center">
                   <Loader2 className="mb-2 spin-animation" size={32} />
                   <small className="fw-bold">CARGANDO</small>
@@ -104,14 +98,11 @@ export default function App() {
                 </div>
               )}
 
-              {/* Contenedor principal de la imagen */}
               <div className="position-relative w-100 h-100 d-flex align-items-center justify-content-center">
                 
-                {/* Efecto de brillo/sombra que cambia con el color: 
-                    Lo mantenemos para el efecto de luz del carro, pero se eliminan los bordes o redondeos.
-                */}
+                {/* Efecto de brillo/sombra radial del color del carro */}
                 <div 
-                  className="position-absolute w-100 h-100" // Eliminada la clase 'rounded-4'
+                  className="position-absolute w-100 h-100" 
                   style={{
                     background: `radial-gradient(circle at center, ${selectedCar.hex}20 0%, transparent 70%)`,
                     opacity: colorTransition ? 0.8 : 0.4,
@@ -130,17 +121,20 @@ export default function App() {
                   className={`img-fluid h-100 object-fit-contain transition-all ${colorTransition ? 'color-change-active' : ''}`}
                   style={{ 
                     objectFit: 'contain',
-                    transition: 'filter 0.5s ease, transform 0.5s ease',
+                    transition: 'filter 0.5s ease, transform 0.5s ease, mask-image 0.5s ease',
                     filter: colorTransition ? 'brightness(1.3) saturate(1.2)' : 'brightness(1) saturate(1)',
                     transform: colorTransition ? 'scale(1.02)' : 'scale(1)',
                     position: 'relative',
-                    zIndex: 2
+                    zIndex: 2,
+                    // CAMBIO CLAVE: Volver a la máscara radial para bordes suaves tipo foco/halo
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, white 15%, transparent 100%)',
+                    maskImage: 'radial-gradient(ellipse at center, white 50%, transparent 100%)',
                   }}
                 />
                 
                 {/* Overlay de transición de color */}
                 <div 
-                  className={`position-absolute top-0 start-0 w-100 h-100 ${colorTransition ? 'color-overlay-active' : ''}`} // Eliminada la clase 'rounded-4'
+                  className={`position-absolute top-0 start-0 w-100 h-100 ${colorTransition ? 'color-overlay-active' : ''}`} 
                   style={{
                     background: selectedCar.hex,
                     opacity: 0,
@@ -152,7 +146,7 @@ export default function App() {
             </div>
 
             {/* CONTROLES */}
-            <div className="text-center mt-5"> {/* Se agregó mt-5 para mantener la separación vertical */}
+            <div className="text-center mt-5">
               <div className="mb-4" style={{ height: '40px' }}>
                 <h3 className="fw-medium text-dark animate-fade-in">
                   {selectedCar.name}
@@ -192,7 +186,6 @@ export default function App() {
       </div>
 
       <style>{`
-        /* ... Estilos CSS existentes (sin cambios significativos en el comportamiento) ... */
         html, body, #root, #app {
             height: 100%;
             margin: 0;
@@ -216,7 +209,6 @@ export default function App() {
           box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
         }
         
-        /* Mantenemos el active-ring para los botones de color */
         .active-ring { 
           transform: scale(1.1); 
           border: 3px solid #fff !important;
@@ -231,7 +223,6 @@ export default function App() {
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Efectos de transición de color mejorados */
         .color-change-active {
           animation: gentlePulse 0.5s ease-in-out;
         }
@@ -263,7 +254,6 @@ export default function App() {
           100% { opacity: 0; }
         }
 
-        /* Mejora la transición general */
         .transition-all {
           transition: all 0.3s ease;
         }
